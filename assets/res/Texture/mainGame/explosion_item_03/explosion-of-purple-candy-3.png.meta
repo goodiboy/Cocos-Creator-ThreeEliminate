@@ -1,6 +1,6 @@
 {
   "ver": "2.3.4",
-  "uuid": "7045cacb-d829-46d1-8e69-09cf26081b29",
+  "uuid": "ec3a9a15-4226-4495-aa08-a77a042856c9",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -13,8 +13,8 @@
   "subMetas": {
     "explosion-of-purple-candy-3": {
       "ver": "1.0.4",
-      "uuid": "28165650-6bff-4ca9-ac39-209ed487903d",
-      "rawTextureUuid": "7045cacb-d829-46d1-8e69-09cf26081b29",
+      "uuid": "327e772e-2f20-4416-ab26-f97ba5ec2a4d",
+      "rawTextureUuid": "ec3a9a15-4226-4495-aa08-a77a042856c9",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,

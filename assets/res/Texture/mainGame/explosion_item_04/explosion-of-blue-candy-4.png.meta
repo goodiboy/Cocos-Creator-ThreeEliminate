@@ -1,6 +1,6 @@
 {
   "ver": "2.3.4",
-  "uuid": "5495b620-3784-484f-afb2-31b41f0dbf48",
+  "uuid": "d511025d-c97a-427f-8ef4-94ffa43d0f46",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -13,8 +13,8 @@
   "subMetas": {
     "explosion-of-blue-candy-4": {
       "ver": "1.0.4",
-      "uuid": "bc2a81aa-46ee-4988-9449-f25321d36eff",
-      "rawTextureUuid": "5495b620-3784-484f-afb2-31b41f0dbf48",
+      "uuid": "935c64c3-5181-4ef3-9424-95234b7c31d5",
+      "rawTextureUuid": "d511025d-c97a-427f-8ef4-94ffa43d0f46",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,

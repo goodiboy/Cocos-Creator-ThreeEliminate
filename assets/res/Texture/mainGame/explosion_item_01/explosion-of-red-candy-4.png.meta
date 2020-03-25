@@ -1,6 +1,6 @@
 {
   "ver": "2.3.4",
-  "uuid": "57535084-dc50-40d1-b4d4-36d7dd09e3ed",
+  "uuid": "9ec4ab62-15c8-4c5c-871f-f716f7538c11",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -13,8 +13,8 @@
   "subMetas": {
     "explosion-of-red-candy-4": {
       "ver": "1.0.4",
-      "uuid": "19b3f11e-ee39-4654-b670-1053ec1651e9",
-      "rawTextureUuid": "57535084-dc50-40d1-b4d4-36d7dd09e3ed",
+      "uuid": "fb687b61-2a2f-4983-8fd1-a196d767f073",
+      "rawTextureUuid": "9ec4ab62-15c8-4c5c-871f-f716f7538c11",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,

@@ -1,6 +1,6 @@
 {
   "ver": "2.3.4",
-  "uuid": "1bcd76e8-968f-4811-ae0a-f76f9f6b5620",
+  "uuid": "0b0f408b-d33a-4ed3-a6c1-e313988db432",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -13,8 +13,8 @@
   "subMetas": {
     "explosion-of-green-candy-4": {
       "ver": "1.0.4",
-      "uuid": "7edf163c-8c02-46e9-97dc-fd1f8d2aa3d1",
-      "rawTextureUuid": "1bcd76e8-968f-4811-ae0a-f76f9f6b5620",
+      "uuid": "0bc98c3d-3820-4105-b92a-03ed60bdeaae",
+      "rawTextureUuid": "0b0f408b-d33a-4ed3-a6c1-e313988db432",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,

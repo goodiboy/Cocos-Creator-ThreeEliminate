@@ -1,6 +1,6 @@
 {
   "ver": "2.3.4",
-  "uuid": "c6aac7bb-2b7a-4cd4-8def-02094bf87c2d",
+  "uuid": "6fb0b794-9022-44d4-a676-9ceac981013f",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -13,8 +13,8 @@
   "subMetas": {
     "explosion-of-orange-candy-2": {
       "ver": "1.0.4",
-      "uuid": "9fcc961e-274d-4907-a77a-9d9aecc6ec2e",
-      "rawTextureUuid": "c6aac7bb-2b7a-4cd4-8def-02094bf87c2d",
+      "uuid": "48eaf568-f2a9-4d32-9ca6-e3d767beca00",
+      "rawTextureUuid": "6fb0b794-9022-44d4-a676-9ceac981013f",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,

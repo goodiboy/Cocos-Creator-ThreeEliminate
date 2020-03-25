@@ -6,3 +6,9 @@ export enum State {
     CANCEL = 5,
     CANCELED = 6
 }
+
+export interface IconData {
+    state: State,
+    iconType: number,
+    anim: cc.Animation
+}

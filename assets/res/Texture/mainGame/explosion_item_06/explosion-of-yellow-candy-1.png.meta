@@ -1,6 +1,6 @@
 {
   "ver": "2.3.4",
-  "uuid": "d073299a-4c9c-4c99-8c3a-14b54fcec6dd",
+  "uuid": "00284b36-3fef-4593-a3f5-b7b83e927029",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -13,8 +13,8 @@
   "subMetas": {
     "explosion-of-yellow-candy-1": {
       "ver": "1.0.4",
-      "uuid": "3bebf746-a627-4090-a70f-733cd0474444",
-      "rawTextureUuid": "d073299a-4c9c-4c99-8c3a-14b54fcec6dd",
+      "uuid": "e11cf446-56ee-4638-9d88-1514ae43facf",
+      "rawTextureUuid": "00284b36-3fef-4593-a3f5-b7b83e927029",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,
