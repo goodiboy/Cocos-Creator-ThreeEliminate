@@ -18,11 +18,8 @@ export default class GameControl extends cc.Component {
     @property(cc.Prefab)
     IconPrefab: cc.Prefab = null;
 
-    // 是否正在控制
-    public control: boolean = false;
 
-    // 正在控制的方块的位置
-    public chooseIconPos: cc.Vec2 = cc.Vec2.ZERO;
+
 
     // 成绩
     public score: number = 0;
@@ -43,15 +40,21 @@ export default class GameControl extends cc.Component {
     public iconNodePool: cc.NodePool = new cc.NodePool();
 
 
+    public static getThis: GameControl = null;
+
+    public constructor() {
+        super();
+        GameControl.getThis = this;
+    }
+
     protected onLoad(): void {
         this._initGameData();
         this._initGameBoard();
     }
-
     private _initGameData(): void {
-        for (let i = 0; i < Utils.ROW_COUNT; i++) {
+        for (let i = 0; i < Utils.COL_COUNT; i++) {
             this.iconsDataTable[i] = [];
-            for (let j = 0; j < Utils.COL_COUNT; j++) {
+            for (let j = 0; j < Utils.ROW_COUNT; j++) {
                 const type = this.getNewIconType(i, j);
                 this.iconsDataTable[i][j] = {state: State.NORMAL, iconType: type, anim: null}
             }
@@ -60,11 +63,11 @@ export default class GameControl extends cc.Component {
 
     // 初始化方块
     private _initGameBoard(): void {
-        for (let i = 0; i < Utils.ROW_COUNT; i++) {
+        for (let i = 0; i < Utils.COL_COUNT; i++) {
             this.iconsTable[i] = [];
             this.iconsPosTable[i] = [];
             this.iconsAnimTable[i] = [];
-            for (let j = 0; j < Utils.COL_COUNT; j++) {
+            for (let j = 0; j < Utils.ROW_COUNT; j++) {
                 const node: cc.Node = this.getIconNode();
                 this.iconsTable[i][j] = node;
                 node.setPosition(cc.v2(-320 + 71 * (i + 1), -360 + 71 * (j + 1)));
@@ -84,7 +87,7 @@ export default class GameControl extends cc.Component {
      * @param j 存储动画组件数组的j下标
      */
     public setIconNormalAnim(i: number, j: number): void {
-        GameControl.setIconAnimObj(this.iconsAnimTable[i][j], "normal0" + this.iconsDataTable[i][j].iconType)
+        this.setIconAnimObj(this.iconsAnimTable[i][j], "normal0" + this.iconsDataTable[i][j].iconType)
     }
 
     /**
@@ -92,9 +95,9 @@ export default class GameControl extends cc.Component {
      * @param anim 动画组件
      * @param name 需要播放的动画名称
      */
-    public static setIconAnimObj(anim: cc.Animation, name: string): void {
+    public setIconAnimObj = (anim: cc.Animation, name: string): void => {
         anim.play(name)
-    }
+    };
 
     /**
      * 生成小方块类型的数据
@@ -129,5 +132,6 @@ export default class GameControl extends cc.Component {
             return this.iconNodePool.get();
         return cc.instantiate(this.IconPrefab);
     }
+
 
 }

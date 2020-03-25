@@ -3,9 +3,9 @@ export default class Utils {
     }
 
     // 行数
-    public static ROW_COUNT: number = 8;
+    public static COL_COUNT: number = 8;
     // 列数
-    public static COL_COUNT: number = 10;
+    public static ROW_COUNT: number = 10;
     // 类型数量
     public static TYPE_COUNT: number = 6;
 
