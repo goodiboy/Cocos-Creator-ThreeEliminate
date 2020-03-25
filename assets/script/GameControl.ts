@@ -1,6 +1,5 @@
 import Utils from "./Utils";
 import {IconData, State} from "./interface";
-import IconPrefab from "./IconPrefab";
 
 const {ccclass, property} = cc._decorator;
 
@@ -106,17 +105,17 @@ export default class GameControl extends cc.Component {
         // 存储当前元素的左边和上边的元素类型
         const exTypeTable: number[] = [-1, -1];
         // 如果当前方块的行数大于1，获取它前一行的类型
-        if (i > 1)
-            exTypeTable[1] = this.iconsDataTable[i - 1][j].iconType;
+        if (i > 0)
+            exTypeTable[0] = this.iconsDataTable[i - 1][j].iconType;
         // 如果当前方块的列数大于1，获取它前一列的类型
-        if (j > 1)
-            exTypeTable[2] = this.iconsDataTable[i][j - 1].iconType;
+        if (j > 0)
+            exTypeTable[1] = this.iconsDataTable[i][j - 1].iconType;
 
         // 存储需要随机的方块类型
         const typeTable: number[] = [];
-        for (let n = 1; n < Utils.TYPE_COUNT; n++) {
+        for (let n = 1; n <= Utils.TYPE_COUNT; n++) {
             // 把不等于当前元素的左边和上边的类型记录下来，进行随机
-            if (n != exTypeTable[1] && n != exTypeTable[2]) {
+            if (n !== exTypeTable[0] && n !== exTypeTable[1]) {
                 typeTable.push(n);
             }
         }
