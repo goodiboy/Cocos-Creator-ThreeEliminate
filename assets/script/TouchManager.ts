@@ -1,6 +1,6 @@
 import GameControl from "./GameControl";
 import Utils from "./Utils";
-import {Dir} from "./interface";
+import {Dir, IconData, TouchMessage} from "./interface";
 
 // GameControl的this
 let GameThis: GameControl = null;
@@ -51,6 +51,52 @@ export default class TouchManager extends cc.Component {
 
     private _touchmove(event): void {
         if (!this._isControl) return;
+        // 划动的方向
+        const dir = this._getTouchDir(event);
+
+        // 限制边界
+        const {x, y} = this._chooseIconPos;
+        //是否是边界的方块
+        if (
+            (x === 0 && dir === Dir.LEFT) ||
+            (x === Utils.COL_COUNT - 1 && dir === Dir.RIGHT) ||
+            (y === 0 && dir === Dir.DOWN) ||
+            (y === Utils.ROW_COUNT - 1 && dir === Dir.UP)
+        ) {
+            this._backOrigin(x, y);
+        } else {
+            GameThis.iconsTable[x][y].position = GameThis.iconsTable[x][y].position.add(event.getDelta());
+        }
+        //是否是边界的方块
+    };
+
+    /**
+     * 方块超出界限，返回原位
+     * @param x 原来位置的数组下标
+     * @param y 原来位置的数组下标
+     */
+    private _backOrigin = (x: number, y: number): void => {
+        const node = GameThis.iconsTable[x][y];
+        node.setPosition(GameThis.iconsPosTable[x][y]);
+        node.zIndex = 0;
+        this._isControl = false;
+        return;
+    };
+
+    private _touchend(event): void {
+        if (!this._isControl) return;
+        // 划动的方向
+        const dir = this._getTouchDir(event);
+        const pos: cc.Vec2 = event.getLocation();
+
+        // 当前的下标
+        const {x, y} = this._chooseIconPos;
+        GameThis.iconsTable[x][y].setPosition(GameThis.iconsPosTable[x][y]);
+        this._isControl = false;
+        this._handleMassage(TouchMessage.EXCHANGE, pos, dir);
+    };
+
+    private _getTouchDir = (event: cc.Touch): Dir => {
         let dir: Dir;
         // 手指按下的位置
         const startPos: cc.Vec2 = event.getStartLocation();
@@ -75,40 +121,60 @@ export default class TouchManager extends cc.Component {
             else
                 dir = Dir.DOWN;
         }
-
-        // 限制边界
-        const {x, y} = this._chooseIconPos;
-        //是否是边界的方块
-        if (
-            (x === 0 && dir === Dir.LEFT) ||
-            (x === Utils.COL_COUNT - 1 && dir === Dir.RIGHT) ||
-            (y === 0 && dir === Dir.DOWN) ||
-            (y === Utils.ROW_COUNT - 1 && dir === Dir.UP)
-        ) {
-            this.backOrigin(x, y);
-        } else {
-            GameThis.iconsTable[x][y].position = GameThis.iconsTable[x][y].position.add(event.getDelta());
-        }
-        //是否是边界的方块
-
-
+        return dir;
     };
+
 
     /**
-     * 方块超出界限，返回原位
-     * @param x 原来位置的数组下标
-     * @param y 原来位置的数组下标
+     * 处理触摸之后的事件
+     * @param message 需要进行的操作
+     * @param pos 手指抬起的位置
+     * @param dir 方向
+     * @private 私有的
      */
-    private backOrigin = (x: number, y: number): void => {
-        const node = GameThis.iconsTable[x][y];
-        node.setPosition(GameThis.iconsPosTable[x][y]);
-        node.zIndex = 0;
-        this._isControl = false;
+    private _handleMassage(message: TouchMessage, pos: cc.Vec2, dir: Dir): void {
+        switch (message) {
+            case TouchMessage.EXCHANGE:
+                break;
+        }
+    }
+
+
+    /**
+     * 方块交换
+     * @param dir 方向
+     * @private
+     */
+    private _testExchange(dir: Dir): boolean {
+        const {x, y} = this._chooseIconPos;
+
+        // 当前操控的方块
+        const controlIconData: IconData = GameThis.iconsDataTable[x][y];
+        // 目标方向上的节点
+        let dirIconData: IconData;
+        switch (dir) {
+            case Dir.LEFT:
+                dirIconData = GameThis.iconsDataTable[x - 1][y];
+                break;
+            case Dir.RIGHT:
+                dirIconData = GameThis.iconsDataTable[x + 1][y];
+                break;
+            case Dir.UP:
+                dirIconData = GameThis.iconsDataTable[x][y + 1];
+                break;
+            case Dir.DOWN:
+                dirIconData = GameThis.iconsDataTable[x][y - 1];
+        }
+
+        // 对调数据
+        let tempVal = controlIconData.iconType;
+        controlIconData.iconType = dirIconData.iconType;
+        dirIconData.iconType = tempVal;
+
+        // 是否消除
+        const isCancel = [false, false, false];
+
         return;
-    };
-
-    private _touchend(event): void {
-
     }
 
 

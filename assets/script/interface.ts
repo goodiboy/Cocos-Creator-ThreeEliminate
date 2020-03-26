@@ -29,3 +29,21 @@ export enum Dir {
     /**下*/
     DOWN = 4
 }
+
+export enum TouchMessage {
+    /**交换*/
+    EXCHANGE = 0,
+
+    /**检测*/
+    CHECK = 1,
+
+    /**消除*/
+    CANCEL = 2,
+
+    /**重新生成*/
+    PRODUCE = 3,
+
+    /**移动*/
+    MOVE = 4
+
+}
