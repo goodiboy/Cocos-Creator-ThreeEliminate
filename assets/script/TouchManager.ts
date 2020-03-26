@@ -139,7 +139,6 @@ export default class TouchManager extends cc.Component {
         }
     }
 
-
     /**
      * 方块交换
      * @param dir 方向
