@@ -19,8 +19,6 @@ export default class GameControl extends cc.Component {
     IconPrefab: cc.Prefab = null;
 
 
-
-
     // 成绩
     public score: number = 0;
 
@@ -39,7 +37,6 @@ export default class GameControl extends cc.Component {
     // 方块对象池
     public iconNodePool: cc.NodePool = new cc.NodePool();
 
-
     public static getThis: GameControl = null;
 
     public constructor() {
@@ -51,6 +48,7 @@ export default class GameControl extends cc.Component {
         this._initGameData();
         this._initGameBoard();
     }
+
     private _initGameData(): void {
         for (let i = 0; i < Utils.COL_COUNT; i++) {
             this.iconsDataTable[i] = [];
@@ -88,6 +86,14 @@ export default class GameControl extends cc.Component {
      */
     public setIconNormalAnim(i: number, j: number): void {
         this.setIconAnimObj(this.iconsAnimTable[i][j], "normal0" + this.iconsDataTable[i][j].iconType)
+    }
+
+    public setIconNormalAnimObj(data: IconData): void {
+        this.setIconAnimObj(data.anim, "normal0" + data.iconType)
+    }
+
+    public setIconCancelAnimObj(data: IconData): void {
+        this.setIconAnimObj(data.anim, "cancel0" + data.iconType)
     }
 
     /**
@@ -132,6 +138,5 @@ export default class GameControl extends cc.Component {
             return this.iconNodePool.get();
         return cc.instantiate(this.IconPrefab);
     }
-
 
 }

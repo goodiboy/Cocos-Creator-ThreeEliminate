@@ -30,7 +30,7 @@ export enum Dir {
     DOWN = 4
 }
 
-export enum TouchMessage {
+export enum Execute {
     /**交换*/
     EXCHANGE = 0,
 
