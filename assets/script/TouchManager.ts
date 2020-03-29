@@ -183,7 +183,7 @@ export default class TouchManager extends cc.Component {
                     const num = GameThis.iconsDataTable[i][j].moveNum;
                     GameThis.iconsTable[i][j].setPosition(GameThis.iconsTable[i][j + num].getPosition());
                     cc.tween(GameThis.iconsTable[i][j])
-                        .to(0.1 * num, {position: pos})
+                        .by(0.1 * num, {position: pos})
                         .start();
                 }
             }
@@ -192,23 +192,28 @@ export default class TouchManager extends cc.Component {
 
     private _exProduce(): void {
         this._moveNum = 0;
-        for (let i = 0; i<Utils.COL_COUNT; i++) {
+        for (let i = 0; i < Utils.COL_COUNT; i++) {
             for (let j = 0; j < Utils.ROW_COUNT; j++) {
                 const icon = GameThis.iconsDataTable[i][j];
                 if (icon.state === State.CANCELED) {
                     this._moveNum++;
                     this.setIconState(i, j, State.MOVE);
                     icon.moveNum = 0;
+                    let isFind: boolean = false;
                     if (j !== Utils.ROW_COUNT) {
-                        for (let k = j + 1; k < Utils.ROW_COUNT ; k++) {
+                        for (let k = j + 1; k < Utils.ROW_COUNT; k++) {
                             icon.moveNum++;
                             const itemIcon = GameThis.iconsDataTable[i][k];
                             if (itemIcon.state !== State.CANCELED) {
                                 itemIcon.state = State.CANCELED;
                                 icon.iconType = itemIcon.iconType;
+                                isFind = true;
                                 break;
                             }
                         }
+                    }
+                    if (!isFind) {
+                        GameThis.iconsDataTable[i][j].iconType = GameThis.getNewIconType(i, j)
                     }
                 }
             }
