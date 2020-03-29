@@ -223,6 +223,7 @@ export default class TouchManager extends cc.Component {
                                 this._handleMassage(Execute.CHECK);
                             }
                         })
+
                         .start();
                 }
             }
