@@ -169,11 +169,43 @@ export default class TouchManager extends cc.Component {
                 break;
             case Execute.MOVE:
                 this._exMove();
-                break
+                break;
+            case Execute.CHECK:
+                this._exCheck();
+                break;
         }
     }
 
 
+    /**
+     * 检查重新生成的方块是否可以消除
+     * @private
+     */
+    private _exCheck(): void {
+        let isCancelV: boolean = false;
+        let isCancelH: boolean = false;
+
+        for (let i = 0; i < Utils.COL_COUNT; i++) {
+            if (this.checkCancelH(i))
+                isCancelV = true;
+        }
+        if (isCancelV)
+            this.setCancelEnsure();
+
+        for (let j = 0; j < Utils.ROW_COUNT; j++) {
+            if (this.checkCancelV(j))
+                isCancelH = true
+        }
+        if (isCancelH)
+            this.setCancelEnsure();
+        if (isCancelV || isCancelH)
+            this._handleMassage(Execute.CANCEL);
+    }
+
+    /**
+     * 执行移动方块
+     * @private
+     */
     private _exMove(): void {
         for (let i = 0; i < Utils.COL_COUNT; i++) {
             for (let j = 0; j < Utils.ROW_COUNT; j++) {
@@ -184,31 +216,51 @@ export default class TouchManager extends cc.Component {
                     GameThis.iconsTable[i][j].setPosition(GameThis.iconsTable[i][j + num].getPosition());
                     cc.tween(GameThis.iconsTable[i][j])
                         .to(0.1 * num, {position: pos})
+                        .call(e => {
+                            this._moveNum--;
+                            // 如果最后一个都移动完毕了，就进行检查数据
+                            if (this._moveNum <= 0) {
+                                this._handleMassage(Execute.CHECK);
+                            }
+                        })
                         .start();
                 }
             }
         }
     }
 
+    /**
+     * 生成心的方块以及，保存也可以移动的方块进行移动
+     * @private
+     */
     private _exProduce(): void {
         this._moveNum = 0;
-        for (let i = 0; i<Utils.COL_COUNT; i++) {
+        for (let i = 0; i < Utils.COL_COUNT; i++) {
             for (let j = 0; j < Utils.ROW_COUNT; j++) {
                 const icon = GameThis.iconsDataTable[i][j];
                 if (icon.state === State.CANCELED) {
+                    // 一共有多少哥方块移动
                     this._moveNum++;
                     this.setIconState(i, j, State.MOVE);
+                    // 当前方块可以移动多少格
                     icon.moveNum = 0;
+                    // 是否完成
+                    let isFinish: boolean = false;
                     if (j !== Utils.ROW_COUNT) {
-                        for (let k = j + 1; k < Utils.ROW_COUNT ; k++) {
+                        for (let k = j + 1; k < Utils.ROW_COUNT; k++) {
                             icon.moveNum++;
                             const itemIcon = GameThis.iconsDataTable[i][k];
                             if (itemIcon.state !== State.CANCELED) {
                                 itemIcon.state = State.CANCELED;
                                 icon.iconType = itemIcon.iconType;
+                                isFinish = true;
                                 break;
                             }
                         }
+                    }
+                    // 对最后方块进行改变类型
+                    if (!isFinish) {
+                        icon.iconType = GameThis.getNewIconType(i, j)
                     }
                 }
             }
