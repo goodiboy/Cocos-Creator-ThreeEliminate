@@ -15,7 +15,8 @@ export interface IconData {
     // 类型
     iconType: number,
     // 动画节点
-    anim: cc.Animation
+    anim: cc.Animation,
+    moveNum?: number
 }
 
 // 滑动的方向

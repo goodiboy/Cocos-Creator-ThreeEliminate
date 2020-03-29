@@ -18,6 +18,9 @@ export default class TouchManager extends cc.Component {
     // 消除的数量
     private _cancelNum: number = 0;
 
+    // 需要移动的数量
+    private _moveNum: number = 0;
+
     protected start(): void {
         GameThis = GameControl.getThis;
         // 关闭多点触摸
@@ -71,6 +74,10 @@ export default class TouchManager extends cc.Component {
         const pos: cc.Vec2 = event.getLocation();
         const {x: px, y: py} = pos.sub(startPos);
 
+        /**
+         * 由两个方块之间建立是直角坐标系，通过勾股定理得出a^2 + b^2 = c^2
+         * 当a^2 + b^2 > c^2的时候证明当前活动的长度已经由一个方块的宽度了
+         */
         if (px * px + py * py > 4900) {
             this._backOrigin(x, y);
             this._handleMassage(Execute.EXCHANGE, pos, dir);
@@ -84,6 +91,7 @@ export default class TouchManager extends cc.Component {
      * 方块超出界限，返回原位
      * @param x 原来位置的数组下标
      * @param y 原来位置的数组下标
+     * @private
      */
     private _backOrigin = (x: number, y: number): void => {
         const node = GameThis.iconsTable[x][y];
@@ -155,7 +163,57 @@ export default class TouchManager extends cc.Component {
                 break;
             case Execute.CANCEL:
                 this._exCancel();
+                break;
+            case Execute.PRODUCE:
+                this._exProduce();
+                break;
+            case Execute.MOVE:
+                this._exMove();
+                break
         }
+    }
+
+
+    private _exMove(): void {
+        for (let i = 0; i < Utils.COL_COUNT; i++) {
+            for (let j = 0; j < Utils.ROW_COUNT; j++) {
+                if (GameThis.iconsDataTable[i][j].state === State.MOVE) {
+                    GameThis.setIconNormalAnimObj(GameThis.iconsDataTable[i][j]);
+                    const pos = GameThis.iconsTable[i][j].getPosition();
+                    const num = GameThis.iconsDataTable[i][j].moveNum;
+                    GameThis.iconsTable[i][j].setPosition(GameThis.iconsTable[i][j + num].getPosition());
+                    cc.tween(GameThis.iconsTable[i][j])
+                        .to(0.1 * num, {position: pos})
+                        .start();
+                }
+            }
+        }
+    }
+
+    private _exProduce(): void {
+        this._moveNum = 0;
+        for (let i = 0; i<Utils.COL_COUNT; i++) {
+            for (let j = 0; j < Utils.ROW_COUNT; j++) {
+                const icon = GameThis.iconsDataTable[i][j];
+                if (icon.state === State.CANCELED) {
+                    this._moveNum++;
+                    this.setIconState(i, j, State.MOVE);
+                    icon.moveNum = 0;
+                    if (j !== Utils.ROW_COUNT) {
+                        for (let k = j + 1; k < Utils.ROW_COUNT ; k++) {
+                            icon.moveNum++;
+                            const itemIcon = GameThis.iconsDataTable[i][k];
+                            if (itemIcon.state !== State.CANCELED) {
+                                itemIcon.state = State.CANCELED;
+                                icon.iconType = itemIcon.iconType;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        this._handleMassage(Execute.MOVE);
     }
 
     /**
@@ -188,11 +246,14 @@ export default class TouchManager extends cc.Component {
         let tempVal = controlIconData.iconType;
         controlIconData.iconType = dirIconData.iconType;
         dirIconData.iconType = tempVal;
+        // 对调数据之后也要调整方块的显示
         GameThis.setIconNormalAnimObj(controlIconData);
         GameThis.setIconNormalAnimObj(dirIconData);
         // 是否消除
         const isCancel: boolean[] = [false, false, false];
+        // 对水平方向进行对比
         isCancel[0] = this.checkCancelH(x);
+        // 对比完之后，要立刻把相同的方块设置成可以消除状态
         this.setCancelEnsure();
         isCancel[1] = this.checkCancelV(y);
         this.setCancelEnsure();
@@ -214,16 +275,26 @@ export default class TouchManager extends cc.Component {
         return (isCancel[0] || isCancel[1] || isCancel[2])
     }
 
+    /**
+     * 对元素进行消除
+     * @private
+     */
     private _exCancel(): void {
+        this._cancelNum = 0;
         for (let i = 0; i < Utils.COL_COUNT; i++) {
             for (let j = 0; j < Utils.ROW_COUNT; j++) {
+                // 遍历全部的方块，把状态是可以消除的进行消除
                 if (GameThis.iconsDataTable[i][j].state === State.PRECANCEL2) {
+                    this._cancelNum++;
                     this.setIconState(i, j, State.CANCEL);
                 }
             }
         }
     }
 
+    /**
+     *  把之前判断为相同的方块设置成可消除状态
+     */
     public setCancelEnsure(): void {
         for (let i = 0; i < Utils.COL_COUNT; i++) {
             for (let j = 0; j < Utils.ROW_COUNT; j++) {
@@ -247,24 +318,25 @@ export default class TouchManager extends cc.Component {
         for (let i = 1; i < Utils.COL_COUNT; i++) {
             // 把相同类型的方块状态设置为PRECANCEL
             if (iconType === GameThis.iconsDataTable[i][col].iconType) {
+                // 计算相同的数量
                 cancelNum++;
-
                 this.setIconState(i, col, State.PRECANCEL);
                 // 如果相同的数量大于3 则进行消除
                 if (cancelNum >= 3) {
                     isCancel = true;
                     //todo 分数
                 }
-
             } else {
                 /**
-                 * 如果相同的类型小于3，则把原来的方块还原类型
+                 * 该方块的不与目标类型相同，且相同类型总数小于3，则把原来的方块还原类型
                  * 1 1
                  * 2 2
                  * 3
                  */
                 if (cancelNum < 3) {
+                    // 从上一个开始，还原NORMAL状态
                     for (let k = i - 1; k >= 0; k--) {
+                        // 把相同的都状态都设置为normal状态，理论上都是相同，写个判断稳点
                         if (iconType === GameThis.iconsDataTable[k][col].iconType) {
                             this.setIconState(k, col, State.NORMAL);
                         } else {
@@ -272,6 +344,7 @@ export default class TouchManager extends cc.Component {
                         }
                     }
                 }
+                // 如果该垂直方向上还没检测的的方块大于 3个，则设置当前方块类型为对比类型，和剩下的进行对比，否则退出循环
                 if (i < (Utils.COL_COUNT - 2)) {
                     cancelNum = 1;
                     iconType = GameThis.iconsDataTable[i][col].iconType;
@@ -279,14 +352,13 @@ export default class TouchManager extends cc.Component {
                 } else {
                     break
                 }
-
             }
         }
         return isCancel;
     }
 
     /**
-     * 检测水平
+     * 检测水平，逻辑和检测垂直一样，参考垂直注释
      * @param row 第几行
      */
     public checkCancelH(row: number): boolean {
@@ -328,7 +400,6 @@ export default class TouchManager extends cc.Component {
                 } else {
                     break
                 }
-
             }
         }
         return isCancel;
@@ -350,6 +421,7 @@ export default class TouchManager extends cc.Component {
                 this.setIconState(i, j, State.CANCELED);
 
                 this._cancelNum--;
+                // 把全部方块消除完成之后，进行生成新的方块
                 if (this._cancelNum === 0) {
                     this._handleMassage(Execute.PRODUCE)
                 }
