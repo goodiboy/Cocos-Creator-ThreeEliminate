@@ -91,6 +91,9 @@
       },
       {
         "__id__": 15
+      },
+      {
+        "__id__": 16
       }
     ],
     "_prefab": null,
@@ -180,7 +183,7 @@
       "array": [
         0,
         0,
-        414.11475959624096,
+        413.9601430089617,
         0,
         0,
         0,
@@ -660,6 +663,25 @@
       "__id__": 2
     },
     "_enabled": true,
+    "ButtonSound": null,
     "_id": "b4PyN58VpIIp/LmXuIfTzX"
+  },
+  {
+    "__type__": "cc.AudioSource",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 2
+    },
+    "_enabled": true,
+    "_clip": {
+      "__uuid__": "0c8bafa0-be98-4bbf-b0b4-e8ba7d0bf727"
+    },
+    "_volume": 1,
+    "_mute": false,
+    "_loop": false,
+    "playOnLoad": false,
+    "preload": true,
+    "_id": "8cq2rnSNFPR4IqNk0KNTAi"
   }
 ]

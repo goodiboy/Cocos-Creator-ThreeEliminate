@@ -75,7 +75,7 @@
         "__id__": 5
       },
       {
-        "__id__": 25
+        "__id__": 26
       },
       {
         "__id__": 16
@@ -84,10 +84,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 28
+        "__id__": 29
       },
       {
-        "__id__": 29
+        "__id__": 30
       }
     ],
     "_prefab": null,
@@ -594,7 +594,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "ScoreLable",
+    "_name": "ScoreLabel",
     "_objFlags": 0,
     "_parent": {
       "__id__": 5
@@ -789,7 +789,11 @@
       }
     ],
     "_active": true,
-    "_components": [],
+    "_components": [
+      {
+        "__id__": 25
+      }
+    ],
     "_prefab": null,
     "_opacity": 255,
     "_color": {
@@ -1154,9 +1158,31 @@
     "_volume": 1,
     "_mute": false,
     "_loop": true,
-    "playOnLoad": false,
+    "playOnLoad": true,
     "preload": true,
     "_id": "02jmVATblM4prFYNZ9RtMn"
+  },
+  {
+    "__type__": "b6b2aA143FFn6dITgUVjifp",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 16
+    },
+    "_enabled": true,
+    "BgMusic": {
+      "__id__": 24
+    },
+    "DropSound": {
+      "__id__": 22
+    },
+    "ButtonSound": {
+      "__id__": 18
+    },
+    "ExplosionSound": {
+      "__id__": 20
+    },
+    "_id": "28aWvz5D1LMK2YQfw8xIZH"
   },
   {
     "__type__": "cc.Node",
@@ -1169,10 +1195,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 26
+        "__id__": 27
       },
       {
-        "__id__": 27
+        "__id__": 28
       }
     ],
     "_prefab": null,
@@ -1228,9 +1254,15 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 25
+      "__id__": 26
     },
     "_enabled": true,
+    "SoundManger": {
+      "__id__": 16
+    },
+    "ScoreLabel": {
+      "__id__": 13
+    },
     "_id": "67dLzFKG5OlKm9jkpGJMOq"
   },
   {
@@ -1238,7 +1270,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 25
+      "__id__": 26
     },
     "_enabled": true,
     "alignMode": 1,

@@ -1,6 +1,7 @@
 import GameControl from "./GameControl";
 import Utils from "./Utils";
 import {Dir, Execute, IconData, State} from "./interface";
+import SoundManager from "./SoundManager";
 
 // GameControl的this
 let GameThis: GameControl = null;
@@ -8,6 +9,16 @@ const {ccclass, property} = cc._decorator;
 
 @ccclass
 export default class TouchManager extends cc.Component {
+
+
+    @property(cc.Node)
+    public SoundManger: cc.Node = null;
+    // 音乐组件
+    public Sounds: SoundManager = null;
+
+    // 分数
+    @property(cc.Label)
+    ScoreLabel: cc.Label = null;
 
     // 是否正在控制方块
     private _isControl: boolean = false;
@@ -21,10 +32,15 @@ export default class TouchManager extends cc.Component {
     // 需要移动的数量
     private _moveNum: number = 0;
 
+    public score: number = 0;
+
     protected start(): void {
         GameThis = GameControl.getThis;
         // 关闭多点触摸
         cc.macro.ENABLE_MULTI_TOUCH = false;
+
+        this.Sounds = this.SoundManger.getComponent(SoundManager);
+
 
         this.node.on(cc.Node.EventType.TOUCH_START, this._touchstart, this);
         this.node.on(cc.Node.EventType.TOUCH_MOVE, this._touchmove, this);
@@ -210,6 +226,7 @@ export default class TouchManager extends cc.Component {
         for (let i = 0; i < Utils.COL_COUNT; i++) {
             for (let j = 0; j < Utils.ROW_COUNT; j++) {
                 if (GameThis.iconsDataTable[i][j].state === State.MOVE) {
+                    this.Sounds.DropSound.play();
                     GameThis.setIconNormalAnimObj(GameThis.iconsDataTable[i][j]);
                     const pos = GameThis.iconsTable[i][j].getPosition();
                     const num = GameThis.iconsDataTable[i][j].moveNum;
@@ -218,12 +235,12 @@ export default class TouchManager extends cc.Component {
                         .to(0.1 * num, {position: pos})
                         .call(e => {
                             this._moveNum--;
+                            GameThis.iconsDataTable[i][j].state = State.NORMAL;
                             // 如果最后一个都移动完毕了，就进行检查数据
                             if (this._moveNum <= 0) {
                                 this._handleMassage(Execute.CHECK);
                             }
                         })
-
                         .start();
                 }
             }
@@ -235,6 +252,7 @@ export default class TouchManager extends cc.Component {
      * @private
      */
     private _exProduce(): void {
+        this.ScoreLabel.string = "" + this.score;
         this._moveNum = 0;
         for (let i = 0; i < Utils.COL_COUNT; i++) {
             for (let j = 0; j < Utils.ROW_COUNT; j++) {
@@ -338,6 +356,7 @@ export default class TouchManager extends cc.Component {
             for (let j = 0; j < Utils.ROW_COUNT; j++) {
                 // 遍历全部的方块，把状态是可以消除的进行消除
                 if (GameThis.iconsDataTable[i][j].state === State.PRECANCEL2) {
+                    this.Sounds.ExplosionSound.play();
                     this._cancelNum++;
                     this.setIconState(i, j, State.CANCEL);
                 }
@@ -377,7 +396,15 @@ export default class TouchManager extends cc.Component {
                 // 如果相同的数量大于3 则进行消除
                 if (cancelNum >= 3) {
                     isCancel = true;
-                    //todo 分数
+
+                    // 对应加分
+                    if (cancelNum == 3) {
+                        this.score = this.score + 30
+                    } else if (cancelNum == 4) {
+                        this.score = this.score + 60
+                    } else if (cancelNum >= 5) {
+                        this.score = this.score + 100
+                    }
                 }
             } else {
                 /**
@@ -428,7 +455,15 @@ export default class TouchManager extends cc.Component {
                 if (cancelNum >= 3) {
 
                     isCancel = true;
-                    //todo 分数
+
+                    // 对应加分
+                    if (cancelNum == 3) {
+                        this.score = this.score + 30
+                    } else if (cancelNum == 4) {
+                        this.score = this.score + 60
+                    } else if (cancelNum >= 5) {
+                        this.score = this.score + 100
+                    }
                 }
             } else {
                 /**
@@ -467,7 +502,7 @@ export default class TouchManager extends cc.Component {
         }
         data.state = state;
         // 如果是消除状态，进行消除，消除完毕之后设置状态为消除后
-        if (state == State.CANCEL) {
+        if (state === State.CANCEL) {
 
             const callBack = (): void => {
                 data.anim.targetOff(this);
