@@ -23,5 +23,7 @@
 - 自动检测有有没有可以消除的方块
 - 添加音乐
 
-
 #### 还有静音的等功能没有完善
+
+#### [项目预览地址](http://www.gdrcz.com/item/ThreeEliminate/index.html) ,服务器很慢，需要加载一定的时间
+
